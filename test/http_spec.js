@@ -4,9 +4,9 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v1.0 which accompany this distribution.
  *
- * The Eclipse Public License is available at 
+ * The Eclipse Public License is available at
  *    http://www.eclipse.org/legal/epl-v10.html
- * and the Eclipse Distribution License is available at 
+ * and the Eclipse Distribution License is available at
  *   http://www.eclipse.org/org/documents/edl-v10.php.
  *
  * Contributors:
@@ -35,44 +35,44 @@ describe("Ponte as an HTTP API", function() {
 
     it("should GET an unknown topic and return a 404", function(done) {
       request(instance.http.server)
-        .get("/resources/hello")
+        .get("/r/hello")
         .expect(404, done);
     });
 
     it("should PUT a topic and return a 204", function(done) {
       request(instance.http.server)
-        .put("/resources/hello")
+        .put("/r/hello")
         .send("hello world")
         .expect(204, done);
     });
 
     it("should PUT a topic and return a Location header", function(done) {
       request(instance.http.server)
-        .put("/resources/hello")
+        .put("/r/hello")
         .send("hello world")
-        .expect('Location', '/resources/hello', done);
+        .expect('Location', '/r/hello', done);
     });
 
     it("should PUT and GET a topic and its payload", function(done) {
       request(instance.http.server)
-        .put("/resources/hello")
+        .put("/r/hello")
         .set("content-type", "text/plain")
         .send("hello world")
         .expect(204, function() {
           request(instance.http.server)
-            .get("/resources/hello")
+            .get("/r/hello")
             .expect(200, "hello world", done);
         });
     });
 
     it("should POST and GET a topic and its payload", function(done) {
       request(instance.http.server)
-        .post("/resources/hello")
+        .post("/r/hello")
         .set("content-type", "text/plain")
         .send("hello world")
         .expect(204, function() {
           request(instance.http.server)
-            .get("/resources/hello")
+            .get("/r/hello")
             .expect(200, "hello world", done);
         });
     });
@@ -82,7 +82,7 @@ describe("Ponte as an HTTP API", function() {
 
         .subscribe("hello", function() {
           request(instance.http.server)
-            .put("/resources/hello")
+            .put("/r/hello")
             .send("world")
             .end(function(err) {
               if (err) {
@@ -100,7 +100,7 @@ describe("Ponte as an HTTP API", function() {
 
     it("should emit an 'updated' event after a put", function(done) {
       request(instance.http.server)
-        .put("/resources/hello")
+        .put("/r/hello")
         .set("content-type", "text/plain")
         .send("hello world")
         .end(function() {});
@@ -120,7 +120,7 @@ describe("Ponte as an HTTP API", function() {
 
     it("should handle CORS headers", function(done) {
       request(instance.http.server)
-        .options("/resources/hello")
+        .options("/r/hello")
         .set('Origin', 'http://somehost.org')
         .expect('Access-Control-Allow-Origin', 'http://somehost.org')
         .expect('Access-Control-Allow-Methods', 'POST, GET, PUT, DELETE, OPTIONS, XMODIFY')
@@ -128,16 +128,16 @@ describe("Ponte as an HTTP API", function() {
         .expect('Access-Control-Allow-Headers', 'X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept')
         .expect(200, done);
     });
-  
+
   });
-  
+
   describe("with auth problems", function() {
-  
+
     beforeEach(function(done){
       settings = ponteSettings();
-      
+
       settings.http.authenticate = function(req, callback) {
-        if(req.url === "/resources/unauthenticated") {
+        if(req.url === "/r/unauthenticated") {
           callback(null, false);
         } else {
           var subject = {};
@@ -158,34 +158,34 @@ describe("Ponte as an HTTP API", function() {
           callback(null, true);
         }
       };
-      
+
       instance = ponte(settings, done);
     });
-    
+
     afterEach(function(done){
       instance.close(done);
     });
-    
+
     it("should return 401 if a request cannot be authenticated", function(done){
       request(instance.http.server)
-        .get("/resources/unauthenticated")
+        .get("/r/unauthenticated")
         .expect(401, done);
     });
-    
+
     it("should return 403 if a GET request is not authorized", function(done){
       request(instance.http.server)
-        .get("/resources/unauthorizedGet")
+        .get("/r/unauthorizedGet")
         .expect(403, done);
     });
-    
+
     it("should return 403 if a PUT request is not authorized", function(done){
       request(instance.http.server)
-        .put("/resources/unauthorizedPut")
+        .put("/r/unauthorizedPut")
         .set("content-type", "text/plain")
         .send("hello world")
         .expect(403, done);
     });
-  
+
   });
-  
+
 });

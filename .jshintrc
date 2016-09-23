@@ -2,6 +2,7 @@
   "node": true,
   "indent": 2,
   "expr": true,
+  "esversion": 6,
   "globals": {
     "it": false,
     "afterEach": false,

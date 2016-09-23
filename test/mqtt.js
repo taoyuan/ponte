@@ -66,7 +66,7 @@ describe("Ponte as an MQTT server", function() {
       client
         .publish("hello", "world", { retain: true, qos: 1 }, function() {
           request(instance.http.server)
-            .get("/resources/hello")
+            .get("/r/hello")
             .expect(200, "world", done);
         });
     });
@@ -76,7 +76,7 @@ describe("Ponte as an MQTT server", function() {
       client
         .publish("/hello", "world", { retain: true, qos: 1 }, function() {
           request(instance.http.server)
-            .get("/resources//hello")
+            .get("/r//hello")
             .expect(200, "world", done);
         });
     });

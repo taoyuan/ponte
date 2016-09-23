@@ -17,3 +17,4 @@ docs
 mosquitto.db
 *.pdf
 db/
+.idea

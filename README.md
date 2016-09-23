@@ -71,7 +71,7 @@ $ ponte -v | bunyan
 Publish from HTTP:
 
 ```
-$ curl -X PUT -d 'world' http://localhost:3000/resources/hello
+$ curl -X PUT -d 'world' http://localhost:3000/r/hello
 ```
 
 The messages from HTTP are _retained_, which means that are sent to
@@ -97,7 +97,7 @@ $ mosquitto_pub -t hello-from-mqtt -m "world" -r
 Reading the published value is an HTTP GET away:
 
 ```
-$ curl http://localhost:3000/resources/hello-from-mqtt
+$ curl http://localhost:3000/r/hello-from-mqtt
 world
 ```
 
@@ -107,7 +107,7 @@ You can send CoAP messages from the command line using [coap-cli](http://github.
 In the following example we do a CoAP PUT to a resource:
 
 ```
-$ echo -n 'world' | coap put coap://localhost/r/hello
+$ echo -n 'world' | coap put coap://localhost/c/hello
 ```
 
 Subscribe using `mosquitto_sub` ([mosquitto](http://mosquitto.org)):
@@ -131,7 +131,7 @@ In order to receive the live updates with CoAP, we need to
 use the observe switch:
 
 ```
-$ coap -o coap://localhost/r/hello-from-mqtt
+$ coap -o coap://localhost/c/hello-from-mqtt
 ```
 
 ## Embedding

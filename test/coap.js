@@ -4,9 +4,9 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v1.0 which accompany this distribution.
  *
- * The Eclipse Public License is available at 
+ * The Eclipse Public License is available at
  *    http://www.eclipse.org/legal/epl-v10.html
- * and the Eclipse Distribution License is available at 
+ * and the Eclipse Distribution License is available at
  *   http://www.eclipse.org/org/documents/edl-v10.php.
  *
  * Contributors:
@@ -24,7 +24,7 @@ describe("Ponte as a CoAP API", function() {
   var instance;
 
   describe("without auth problems", function() {
-  
+
     beforeEach(function(done) {
       settings = ponteSettings();
       instance = ponte(settings, done);
@@ -33,11 +33,11 @@ describe("Ponte as a CoAP API", function() {
     afterEach(function(done) {
       instance.close(done);
     });
-  
+
     it("should GET an unknown topic and return a 4.04", function(done) {
       var req = coap.request({
         port: settings.coap.port,
-        pathname: "/r/hello"
+        pathname: "/c/hello"
       }).end();
 
       req.on('response', function(res) {
@@ -61,7 +61,7 @@ describe("Ponte as a CoAP API", function() {
     it("should PUT a topic and return a 2.04 (changed)", function(done) {
       var req = coap.request({
         port: settings.coap.port,
-        pathname: "/r/hello",
+        pathname: "/c/hello",
         method: 'PUT'
       }).end('hello world');
 
@@ -74,12 +74,12 @@ describe("Ponte as a CoAP API", function() {
     it("should PUT a topic and set a 'Location-Path' option", function(done) {
       var req = coap.request({
         port: settings.coap.port,
-        pathname: "/r/hello",
+        pathname: "/c/hello",
         method: 'PUT'
       }).end('hello world');
 
       req.on('response', function(res) {
-        expect(res.headers).to.have.property('Location-Path', '/r/hello');
+        expect(res.headers).to.have.property('Location-Path', '/c/hello');
         done();
       });
     });
@@ -87,14 +87,14 @@ describe("Ponte as a CoAP API", function() {
     it("should PUT a topic and return a 2.04 (changed) if the topic existed", function(done) {
       var req = coap.request({
         port: settings.coap.port,
-        pathname: "/r/hello",
+        pathname: "/c/hello",
         method: 'PUT'
       }).end('hello world');
 
       req.on('response', function(res) {
         req = coap.request({
           port: settings.coap.port,
-          pathname: "/r/hello",
+          pathname: "/c/hello",
           method: 'PUT'
         }).end('hello matteo');
 
@@ -108,14 +108,14 @@ describe("Ponte as a CoAP API", function() {
     it("should PUT and GET a topic and its payload", function(done) {
       var req = coap.request({
         port: settings.coap.port,
-        pathname: "/r/hello",
+        pathname: "/c/hello",
         method: 'PUT'
       }).end('hello world');
 
       req.on('response', function(res) {
         req = coap.request({
           port: settings.coap.port,
-          pathname: "/r/hello",
+          pathname: "/c/hello",
         }).end();
 
         req.on('response', function(res) {
@@ -134,7 +134,7 @@ describe("Ponte as a CoAP API", function() {
           .subscribe("hello", function() {
             var req = coap.request({
               port: settings.coap.port,
-              pathname: "/r/hello",
+              pathname: "/c/hello",
               method: 'PUT'
             }).end('world');
           })
@@ -149,7 +149,7 @@ describe("Ponte as a CoAP API", function() {
     it("should allow to observe resources", function(done) {
       var req = coap.request({
         port: settings.coap.port,
-        pathname: "/r/hello",
+        pathname: "/c/hello",
         method: 'PUT'
       }).end('abcdef');
 
@@ -157,7 +157,7 @@ describe("Ponte as a CoAP API", function() {
 
         var req2 = coap.request({
           port: settings.coap.port,
-          pathname: "/r/hello",
+          pathname: "/c/hello",
           method: 'GET',
           observe: true
         });
@@ -190,7 +190,7 @@ describe("Ponte as a CoAP API", function() {
     it("should emit an 'updated' event after a put", function(done) {
       var req = coap.request({
         port: settings.coap.port,
-        pathname: "/r/hello",
+        pathname: "/c/hello",
         method: "PUT"
       }).end("hello world");
 
@@ -200,16 +200,16 @@ describe("Ponte as a CoAP API", function() {
         done();
       });
     });
-  
+
   });
 
   describe("with auth problems", function() {
-  
+
     beforeEach(function(done){
       settings = ponteSettings();
-      
+
       settings.coap.authenticate = function(req, callback) {
-        if(req.url === "/r/unauthenticated") {
+        if(req.url === "/c/unauthenticated") {
           callback(null, false);
         } else {
           var subject = {};
@@ -230,18 +230,18 @@ describe("Ponte as a CoAP API", function() {
           callback(null, true);
         }
       };
-      
+
       instance = ponte(settings, done);
     });
-    
+
     afterEach(function(done){
       instance.close(done);
     });
-  
+
     it("should return 4.01 if a request cannot be authenticated", function(done)  {
       var req = coap.request({
         port: settings.coap.port,
-        pathname: "/r/unauthenticated"
+        pathname: "/c/unauthenticated"
       }).end();
 
       req.on('response', function(res) {
@@ -249,11 +249,11 @@ describe("Ponte as a CoAP API", function() {
         done();
       });
     });
-    
+
     it("should return 4.03 if a GET request is not authorized", function(done)  {
       var req = coap.request({
         port: settings.coap.port,
-        pathname: "/r/unauthorizedGet"
+        pathname: "/c/unauthorizedGet"
       }).end();
 
       req.on('response', function(res) {
@@ -261,11 +261,11 @@ describe("Ponte as a CoAP API", function() {
         done();
       });
     });
-    
+
     it("should return 4.03 if a PUT request is not authorized", function(done)  {
       var req = coap.request({
         port: settings.coap.port,
-        pathname: "/r/unauthorizedPut",
+        pathname: "/c/unauthorizedPut",
         method: "PUT"
       }).end();
 
@@ -274,7 +274,7 @@ describe("Ponte as a CoAP API", function() {
         done();
       });
     });
-  
+
   });
 
 });
