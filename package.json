@@ -15,8 +15,7 @@
   },
   "pre-commit": [
     "jshint-lib",
-    "jshint-test",
-    "test"
+    "jshint-test"
   ],
   "repository": {
     "type": "git",
