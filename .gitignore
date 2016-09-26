@@ -18,3 +18,4 @@ mosquitto.db
 *.pdf
 db/
 .idea
+examples/db
